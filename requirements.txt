@@ -1,0 +1,16 @@
+# Core requirements for GEO/SRA metadata retrieval
+requests>=2.25.0
+pandas>=1.3.0
+beautifulsoup4>=4.9.0
+lxml>=4.6.0
+xmltodict>=0.12.0
+pysradb>=2.3.0
+
+# Metadata mapping requirements
+PyYAML>=6.0.0
+openpyxl>=3.0.0
+
+# Optional requirements for advanced features
+# Uncomment if you want Google Sheets integration:
+# pygsheets>=2.0.0
+# openai>=1.0.0

@@ -1,0 +1,6 @@
+id,fileName,assay,specimenType,platform,diagnosis,species
+NF_001,file1.fastq,single-cell RNA-seq,cerebral cortex,,Not Applicable,Homo sapiens
+NF_002,file2.fastq,whole genome sequencing,blood,,Not Applicable,Homo sapiens
+NF_003,file3.fastq,RNA-seq,,Oxford Nanopore,Not Applicable,Homo sapiens
+NF_004,file4.bam,ChIP-seq,bone marrow,,Not Applicable,Homo sapiens
+NF_005,file5.vcf,whole genome sequencing,primary tumor,PacBio RS II,Not Applicable,Homo sapiens
