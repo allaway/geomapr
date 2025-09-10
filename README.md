@@ -1,15 +1,17 @@
 # GeoMapr
 
-A Python package for retrieving and transforming metadata from GEO/SRA for listing in other data repositories.
+A Python package for retrieving metadata from GEO/SRA and intelligently mapping it to standardized metadata templates using AI.
 
 ## Features
 
 - 🧬 **GEO/SRA Integration**: Retrieve comprehensive metadata from GEO series and associated SRA files
+- 🤖 **AI-Powered Mapping**: Intelligently map retrieved metadata to standardized templates using OpenRouter LLMs
 - 📊 **File-Level Detail**: Get individual file information including S3 locations, checksums, and sizes  
-- 📋 **Flexible Output**: Generate CSV files with one row per individual file
+- 📋 **Flexible Output**: Generate CSV and Excel files with confidence-based mapping results
 - 🔍 **Comprehensive Data**: Combines GEO sample metadata with detailed SRA file information
-- ⚡ **Easy Setup**: No credentials required for core functionality
-- 🎯 **API-Only Values**: All output comes directly from APIs, no constructed values
+- 🎯 **Controlled Vocabularies**: Map to standardized terms from NF metadata dictionary
+- 💰 **Cost Tracking**: Real-time token usage and cost tracking with OpenRouter Usage Accounting
+- ⚡ **Easy Setup**: Simple configuration with API credentials
 
 ## Installation
 
@@ -35,80 +37,142 @@ A Python package for retrieving and transforming metadata from GEO/SRA for listi
    pip install -e .
    ```
 
+5. **Set up API credentials:**
+   ```bash
+   cp example_creds.yaml creds.yaml
+   # Edit creds.yaml with your OpenRouter API key
+   ```
+
 ## Quick Start
 
-**No setup required!** Just run:
-
+### Retrieve GEO/SRA Metadata
 ```bash
-python usage_examples/simple_example.py
+geomapr retrieve GSE212964
 ```
 
-For more examples and AI-powered metadata mapping, see the [`usage_examples/`](usage_examples/) directory.
+### AI-Powered Metadata Mapping
+```bash
+# Map retrieved metadata to a template
+geomapr map input_metadata.csv target_template.csv output_mapped.csv
+```
+
+### Complete Pipeline
+```bash
+# Retrieve + Map in one command
+geomapr pipeline GSE212964 target_template.csv final_output.csv
+```
 
 ## Usage
 
-### 🧬 Basic GEO/SRA Metadata Retrieval
+### 🧬 GEO/SRA Metadata Retrieval
 
 ```python
 from geomapr import MetadataProcessor
 
-# Initialize processor (no credentials needed!)
+# Initialize processor (no credentials needed for retrieval!)
 processor = MetadataProcessor()
 
 # Process a GEO series
-result_df = processor.process_geo_series('GSE212964', 'output.csv')
+result_df = processor.process_geo_series('GSE212964', 'GSE212964_metadata.csv')
 
 # Display results
 print(f"Generated {len(result_df)} rows of metadata")
 print(result_df.head())
 ```
 
+### 🤖 AI-Powered Metadata Mapping
+
+```python
+from geomapr.metadata_mapper import MetadataMapper
+
+# Initialize mapper (requires OpenRouter API key)
+mapper = MetadataMapper()
+
+# Map retrieved metadata to a standardized template
+mapped_df = mapper.process_csv_mapping(
+    input_csv='GSE212964_metadata.csv',
+    target_csv='nf_template.csv',
+    output_xlsx='mapped_results.xlsx'
+)
+
+# Results include confidence scores and color-coded Excel output
+print(f"Mapped {len(mapped_df)} rows with AI assistance")
+```
+
 ### 🚀 Command Line Interface
 
 ```bash
-# Process a GEO series
-geomapr GSE212964
+# Retrieve GEO/SRA metadata
+geomapr retrieve GSE212964
 
-# Specify output file  
-geomapr GSE212964 -o my_data.csv
+# Map metadata to template with AI
+geomapr map input.csv template.csv output.xlsx
 
-# Show summary only
-geomapr GSE212964 --summary-only
+# Complete pipeline: retrieve + map
+geomapr pipeline GSE212964 template.csv final_output.xlsx
 ```
 
-### 📊 Example Output
+### 📊 Output Formats
 
-Each row represents an individual file with metadata:
+**Retrieved Metadata CSV:**
+Each row represents an individual file with comprehensive metadata:
 
-| sample_title | file_name | file_format | file_size_mb | file_s3_location | file_md5 | ... |
-|--------------|-----------|-------------|--------------|------------------|----------|-----|
-| Sample_1 | EP5_S5_L001_R1_001.fastq.gz | fastq | 25615.06 | s3://sra-pub-src-1/... | a1b2c3... | ... |
-| Sample_1 | EP5_S5_L001_R2_001.fastq.gz | fastq | 20067.88 | s3://sra-pub-src-1/... | d4e5f6... | ... |
+| sample_title | file_name | file_format | file_size_mb | organism_name | library_strategy | ... |
+|--------------|-----------|-------------|--------------|---------------|------------------|-----|
+| Sample_1 | EP5_S5_L001_R1_001.fastq.gz | fastq | 25615.06 | Homo sapiens | RNA-Seq | ... |
+| Sample_1 | EP5_S5_L001_R2_001.fastq.gz | fastq | 20067.88 | Homo sapiens | RNA-Seq | ... |
 
-### 🔍 Metadata Fields
+**AI-Mapped Output Excel:**
+Color-coded results with confidence scores:
 
-The output CSV includes:
+| Filename | species | assay | specimenID | age | ... |
+|----------|---------|-------|------------|-----|-----|
+| file1.fastq.gz | Homo sapiens ✅ | RNA-seq ✅ | SAMN123456 🟡 | 45 🟡 | ... |
 
-**GEO Metadata:**
-- `series_title`, `series_summary`
-- `sample_title`, `sample_description` 
-- `organism`, `platform`, `library_strategy`
+- ✅ Green: High confidence (0.8+)
+- 🟡 Yellow: Medium confidence (0.5-0.8)  
+- 🔴 Red: Low confidence (<0.5)
 
-**SRA File Details:**
-- `file_name`, `file_format`, `file_size_mb`
-- `file_s3_location`, `file_download_url`
-- `file_md5`, `sra_run_id`
+### 🔍 Key Features
 
-**And many more fields from both GEO and SRA APIs!**
+**GEO/SRA Retrieval:**
+- Complete metadata from GEO series and SRA files
+- File-level details with S3 locations and checksums
+- No credentials required for retrieval
 
-## Examples
+**AI Mapping:**
+- Maps to controlled vocabularies from NF metadata dictionary
+- Handles both controlled terms and freetext columns
+- Provides confidence scores for all mappings
+- Intelligent filename-to-row matching
+- Cost tracking with OpenRouter Usage Accounting
 
-See the [`usage_examples/`](usage_examples/) directory for:
+## Configuration
 
-- **Basic GEO metadata retrieval** (`simple_example.py`, `example.py`)
-- **AI-powered metadata mapping** (`metadata_mapper_example.py`)
-- **Complete workflows** (`complete_example.py`)
-- **Sample data files** and comprehensive documentation
+### OpenRouter API Setup
+
+1. Get an API key from [OpenRouter](https://openrouter.ai/keys)
+2. Copy the example credentials file:
+   ```bash
+   cp example_creds.yaml creds.yaml
+   ```
+3. Edit `creds.yaml` with your API key:
+   ```yaml
+   openrouter:
+     api_key: "your-api-key-here"
+   ```
+
+### Model Configuration
+
+Edit `config.yaml` to customize the AI model:
+```yaml
+llm:
+  model: "google/gemini-2.5-flash"  # Fast and cost-effective
+  temperature: 0.1
+  max_tokens: 4000
+```
+
+## Advanced Usage
 
 ### Process Different GEO Series
 
@@ -124,31 +188,36 @@ processor.process_geo_series('GSE212964', 'small_dataset.csv')
 processor.process_geo_series('GSE75748', 'large_dataset.csv')
 ```
 
-### Get Series Summary
+### Custom Template Mapping
 
 ```python
-# Quick summary without processing all files
-summary = processor.get_series_summary('GSE212964')
-print(f"Title: {summary['title']}")
-print(f"Samples: {summary['unique_samples']}")
-print(f"Total files: {summary['total_sra_runs']}")
+from geomapr.metadata_mapper import MetadataMapper
+
+mapper = MetadataMapper()
+
+# Use custom target template
+result = mapper.process_csv_mapping(
+    input_csv='my_geo_data.csv',
+    target_csv='custom_template.csv', 
+    output_xlsx='custom_mapped.xlsx'
+)
+
+print(f"Mapped {len(result)} rows")
+print(f"Cost: ${mapper.ai_logger.total_actual_cost:.6f}")
 ```
-
-## Output Format
-
-The package generates CSV files where:
-- **One row per individual file** (FASTQ, SRA, index files, etc.)
-- **Exact S3 locations** from SRA API
-- **MD5 checksums** for file integrity
-- **All values from APIs** - no constructed or fallback values
 
 ## Requirements
 
+**Core Dependencies:**
 - requests
 - pandas  
 - beautifulsoup4
 - lxml
 - pysradb
+
+**AI Mapping Dependencies:**
+- PyYAML
+- openpyxl
 
 ## License
 
