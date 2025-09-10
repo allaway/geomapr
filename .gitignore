@@ -51,7 +51,6 @@ temp_*.csv
 ~$*.xlsx
 ~$*.xls
 
-# Generated metadata files (except examples)
+# Generated metadata files (except demo)
 *_metadata.csv
 !demo_metadata.csv
-!usage_examples/*_metadata.csv

@@ -1,6 +1,0 @@
-id,fileName,assay,specimenType,platform,diagnosis,species
-NF_001,file1.fastq,,,,,
-NF_002,file2.fastq,,,,,
-NF_003,file3.fastq,,,,,
-NF_004,file4.bam,,,,,
-NF_005,file5.vcf,,,,,
