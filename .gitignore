@@ -40,6 +40,18 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Test outputs
+# Test outputs and temp files
 *_test_output.csv
+test_*.csv
+debug_*.csv
+temp_*.csv
+*_temp.csv
+
+# Excel temporary files
+~$*.xlsx
+~$*.xls
+
+# Generated metadata files (except examples)
 *_metadata.csv
+!demo_metadata.csv
+!usage_examples/*_metadata.csv

@@ -1,0 +1,6 @@
+file_name,experiment_type,tissue_source,sequencing_platform,data_description
+file1.fastq,TRANSCRIPTOMIC SINGLE CELL,cerebral cortex,Illumina HiSeq,Single cell RNA sequencing of brain tissue
+file2.fastq,GENOMIC VARIANT,blood,Illumina NovaSeq,Whole genome sequencing for variant detection
+file3.fastq,TRANSCRIPTOMIC BULK,skin fibroblast,Oxford Nanopore,Bulk RNA-seq analysis
+file4.bam,EPIGENOMIC,bone marrow,Illumina HiSeq,ChIP-seq for histone modifications
+file5.vcf,GENOMIC STRUCTURAL,tumor tissue,PacBio,Long-read sequencing for structural variants
