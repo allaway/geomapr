@@ -1,5 +1,5 @@
 # OpenRouter API credentials
 # Copy this file to creds.yaml and fill in your actual API key
 openrouter:
-  api_key: "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"
+  api_key: "sk-or-..."
   # Get your API key from: https://openrouter.ai/keys
