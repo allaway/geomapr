@@ -1,4 +1,4 @@
-# GeoMapr
+# geomapr
 
 A Python package for retrieving metadata from GEO/SRA and intelligently mapping it to standardized metadata templates using AI.
 
